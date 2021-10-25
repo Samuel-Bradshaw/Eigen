@@ -16,14 +16,13 @@ OPTIONS = {
 	CLIOption('all', 'a', 'retrieve all results. This overrides num option.'),
 	CLIOption('min_count', 'm', 'set a minimum number of times a word should appear in texts for it to be included in results.', 'min'),
 	CLIOption('interested_in', 'i', 'Choose the type of words you want to see in results from "verbs", "adjectives", "nouns". By default, all nouns, adjectives, numerical, and foreign words are included in results.', 'type'),
-	#CLIOption('lemmatize', 'l', 'lemmatize words when extracting data. By default words are not lemmatized.'), 
-	# TODO: Add --lemmatize option to CLI. Currently buggy, possibly due to limitations of wordnet limitizer 
+	CLIOption('lemmatize', 'l', 'lemmatize words when extracting data. By default words are not lemmatized.'), # Warning: Seems buggy, possibly due to limitations of wordnet lemmatizer 
 	CLIOption('help', 'h', 'print this help message.')
 } 
 """ Set of command line options"""
 
 
-def extract_word_data(input_files, file=None, num=15, omit_sentences=False, all=False, min_count=None, interested_in=None): # TODO: add "lemmatize=False" argument 
+def extract_word_data(input_files, file=None, num=15, omit_sentences=False, all=False, min_count=None, interested_in=None, lemmatize=False):
 	"""
 	Extracts word data from files in dir and outputs data on interesting words, 
 	including total number of occurences and which files they were found in.
@@ -38,12 +37,12 @@ def extract_word_data(input_files, file=None, num=15, omit_sentences=False, all=
 	from WordExtractor import WordExtractor # import here as nltk packages are downloaded when WordExtractor is imported
 	if interested_in:
 		try:
-			WordExtractor.define_interesting_types(interested_in)
+			WordExtractor.set_interesting_types(interested_in)
 		except ValueError as e:
 			print(f'Error: invalid value specified for --interesting option. {e}')
 			print_help_and_exit(1)
 
-	word_data = WordData() # TODO: add "lemmatize" argument
+	word_data = WordData(lemmatize)
 	# Extract word data from files
 	for input_file in input_files:
 		we = WordExtractor(input_file)
@@ -74,7 +73,7 @@ def print_help_and_exit(exit_code=0):
 	for o in OPTIONS:
 		arg = f' [{o.arg_name}]' if o.arg_name else ''
 		print(f'-{o.short} | --{o.long + arg :24} {o.description}')
-	print('\nFor example: "python extract.py testDocs -f results.txt -n 100 -i verbs -i nouns" will print the top 100 verbs and nouns in the files in the "testDocs" folder to output file "results.txt".')
+	print('\nFor example: "python extract.py /path/to/docs -f results.txt -n 100 -i verbs -i nouns" will print the top 100 verbs and nouns in the files in the "docs" folder to output file "results.txt".')
 	sys.exit(exit_code)
 
 
@@ -108,9 +107,8 @@ def extract_args(optlist: tuple):
 			args['all'] = True
 		elif opt in ('interested_in', 'i'):
 			interesting_types.append(value)
-		# TODO: uncomment to add --lemmatize option to CLI
-		# elif opt in ('lemmatize', 'l'):
-		# 	args['lemmatize'] = True
+		elif opt in ('lemmatize', 'l'):
+			args['lemmatize'] = True
 		else:
 			for valid_option in OPTIONS:
 				if opt == valid_option:

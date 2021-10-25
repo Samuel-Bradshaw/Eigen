@@ -7,11 +7,9 @@ class WordExtractor:
 	"""
 	Class for reading text from a file and extracting interesting words and information on where they occured. 
 	"""
-	nltk.download('words')
 	nltk.download('punkt') 
 	nltk.download('stopwords')
 	nltk.download('averaged_perceptron_tagger')
-	nltk.download('wordnet')
 
 	STOP_WORDS = set(nltk.corpus.stopwords.words('english')) 
 	""" Set of commonly used words in English language. """
@@ -28,9 +26,6 @@ class WordExtractor:
 		'FW' # foreign words
 	}
 	""" Types of words to include. See nltk documentation for pos tagging. Run nltk.help.upenn_tagset() to see full list of nltk pos tags. """
-
-	WORDS = set(nltk.corpus.words.words())
-	""" Set of words in English language. """
 
 	def __init__(self, filepath, encoding=None):
 		"""
@@ -58,10 +53,12 @@ class WordExtractor:
 						if pos not in ('NNP','NNPS') and word[0].isupper(): 
 							word_pos = (word.lower(), pos)
 						if WordExtractor.is_interesting(word_pos):
-							data.add(word_pos, file.name, word_pos_tuples)
+							if pos.startswith('V') and not "'" in word\
+								or not pos.startswith('V'):
+								data.add(word_pos, file.name, word_pos_tuples)
 
 	@staticmethod
-	def define_interesting_types(word_types):
+	def set_interesting_types(word_types):
 		""" 
 		Updates the WordExtractor.interesting_types static variable set.
 		
@@ -94,5 +91,4 @@ class WordExtractor:
 		word, pos = word_pos
 		return word not in WordExtractor.STOP_WORDS \
 				and pos in WordExtractor.interesting_types \
-					and (word in WordExtractor.WORDS or pos in ('FW', 'CD'))
 

@@ -4,15 +4,17 @@ from os import path
 from itertools import islice
 from typing import Iterable
 from nltk.tokenize.treebank import TreebankWordDetokenizer
-# from nltk.corpus import wordnet # TODO: Uncomment to add lemmatize option. Currently buggy, possibly due to limitations of wordnet limitizer 
-# import nltk # TODO: See above
+from nltk.corpus import wordnet
+import nltk
 
 class WordData:
 	""" Class for storing data on words and the files and sentences they were found in. """
 
-	def __init__(self):	# TODO: Add "lemmatize=False" param to add lemmatize option. 
+	def __init__(self, lemmatize=False):
 		self.data = dict()
-		# self.lemmatizer = nltk.stem.WordNetLemmatizer() if lemmatize else None # TODO: uncomment to add lemmatize option
+		if lemmatize:
+			nltk.download('wordnet')
+		self.lemmatizer = nltk.stem.WordNetLemmatizer() if lemmatize else None
 	
 	def add(self, word_pos, file, sentence_pos):
 		"""
@@ -24,10 +26,9 @@ class WordData:
 			file: The file the word was found in.
 			sentence_pos: The full sentence the word occured in, split in to an array of (word, pos_tags) tuples.
 		"""
-		# TODO: add option to lemmatize tokens
-		# if self.lemmatizer:
-		# 	lemmatized_word = self.lemmatizer.lemmatize(word_pos[0], pos=WordData.get_wordnet_pos(pos))
-		# 	word_pos = (lemmatized_word, pos)
+		if self.lemmatizer is not None:
+			lemmatized_word = self.lemmatizer.lemmatize(word_pos[0], pos=WordData.get_wordnet_pos(word_pos[1]))
+			word_pos = (lemmatized_word, word_pos[1])
 
 		if self.data.get(word_pos) is None: # Word has not been seen yet
 			self.data[word_pos] = dict()
@@ -144,19 +145,17 @@ class WordData:
 				print(output, file=f)
 			print(f"\nResults recorded to {file}")
 
-	
-	# TODO: Uncomment method required to use wordnet lemmatizer
-	# @staticmethod
-	# def get_wordnet_pos(nltk_pos):
-	# 	""" Maps nltk pos tags to wordnet lemmatizer pos tags """
-	# 	if nltk_pos.startswith('J'):
-	# 		return wordnet.ADJ
-	# 	elif nltk_pos.startswith('V'): 
-	# 		return wordnet.VERB
-	# 	elif nltk_pos.startswith('N'):
-	# 		return wordnet.NOUN
-	# 	elif nltk_pos in ('RB', 'RBR', 'RBS'): 
-	# 		return wordnet.ADV
-	# 	else: 
-	# 		return 'n'
+	@staticmethod
+	def get_wordnet_pos(nltk_pos):
+		""" Maps nltk pos tags to wordnet lemmatizer pos tags """
+		if nltk_pos.startswith('J'):
+			return wordnet.ADJ
+		elif nltk_pos.startswith('V'): 
+			return wordnet.VERB
+		elif nltk_pos.startswith('N'):
+			return wordnet.NOUN
+		elif nltk_pos in ('RB', 'RBR', 'RBS'): 
+			return wordnet.ADV
+		else: 
+			return 'n'
 
