@@ -1,4 +1,5 @@
 # Author: Sam Bradshaw
+
 from os import path
 from itertools import islice
 from typing import Iterable
