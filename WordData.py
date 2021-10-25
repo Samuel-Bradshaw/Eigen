@@ -1,11 +1,10 @@
 # Author: Sam Bradshaw
-
 from os import path
 from itertools import islice
 from typing import Iterable
 from nltk.tokenize.treebank import TreebankWordDetokenizer
-# from nltk.corpus import wordnet # TODO Uncomment to add lemmatize option. Currently buggy, possibly due to limitations of wordnet limitizer 
-# import nltk # TODO
+# from nltk.corpus import wordnet # TODO: Uncomment to add lemmatize option. Currently buggy, possibly due to limitations of wordnet limitizer 
+# import nltk # TODO: See above
 
 class WordData:
 	""" Class for storing data on words and the files and sentences they were found in. """
