@@ -117,22 +117,9 @@ class WordData:
 			include_sentences: Determines whether sentences should be included in output results.
 			file: If not None, print results to output file with this name. Else print to console.
 		"""
-		output_lines = []
-		
-		def underline_bold(word):
-			""" Adds formatting to console output """
-			return f'\033[4m\033[1m{word}\033[0m\033[0m'
-		
-		if is_printing_to_console := file is None: 
-			output_lines.append(f"\n{underline_bold('Results')}:\n")
-		else: 
-			output_lines.append(f"Results:")
-			output_lines.append("")
-
+		output_lines = ["Results: ", ""]
 		for rank, (word_pos, occurences) in enumerate(results):
 			word_info = f"{rank + 1} - {word_pos[0]} ({self.get_count(word_pos)})"
-			if is_printing_to_console: 
-				word_info = underline_bold(word_info) # add formatting
 			output_lines.append(f'{word_info} {{')
 			# Print file names that word occured in 
 			for filepath in list(occurences.keys()):
@@ -143,18 +130,13 @@ class WordData:
 				if include_sentences:
 					for sentence in occurences[filepath]:
 						words = [wp[0] for wp in sentence]
-						if is_printing_to_console: 
-							# add formatting 
-							for i, wp in enumerate(sentence):
-								if WordData.is_equivalent(word_pos, wp):
-									words[i] = underline_bold(wp[0])
 						sentence = TreebankWordDetokenizer().detokenize(words)
 						output_lines.append(f'\t\t"{sentence}",')
 					output_lines.append('\t]')
 			output_lines.append('}')
 		output = '\n'.join(output_lines)
 	
-		if is_printing_to_console:
+		if file is None:
 			print(output)
 		else:
 			# Write results to file
