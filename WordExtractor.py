@@ -90,5 +90,5 @@ class WordExtractor:
 		"""
 		word, pos = word_pos
 		return word not in WordExtractor.STOP_WORDS \
-				and pos in WordExtractor.interesting_types \
+				and pos in WordExtractor.interesting_types
 
