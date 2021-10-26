@@ -11,6 +11,9 @@ class WordData:
 	""" Class for storing data on words and the files and sentences they were found in. """
 
 	def __init__(self, lemmatize=False):
+		"""
+		param lemmatize: Determines whether words should be lemmatized before being added to data. 
+		"""
 		self.data = dict()
 		if lemmatize:
 			nltk.download('wordnet')
@@ -64,6 +67,9 @@ class WordData:
 		Generates tuples containing words and information on where they occured.
 		
 		Args:
+			min_count: The minimum number of times a word should appear in data for it to be \
+				included in the results.
+			
 			sort_by: Parameter to pass to 'key' argument of :py:func:`list.sort` function. \
 				Use if results should be generated in a particular order.
 		"""

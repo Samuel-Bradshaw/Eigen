@@ -28,11 +28,14 @@ def extract_word_data(input_files, file=None, num=15, omit_sentences=False, all=
 	including total number of occurences and which files they were found in.
 
 	Args:
-		input_files: Array of input files.
+		input_files: List of input files.
 		file: File to output results to. If None (default), then results are printed to console.
 		num: Number of words to include in results.
 		omit_sentences: If True, the sentences that each word occured in are omitted in results. Else sentences are included.
 		all: Include all results in output (overrides num).
+		min_count: The miniumum number of times a word needs to appear in the data for it to be included in the results.
+		interested_in: A list of word types to be returned in the results. Valid entries are "verbs", "adjectives", or "nouns".
+		lemmatize: If True, all words are lemmatized when added to data. E.g. "walking" -> "walk", "children" -> "child", etc.
 	"""
 	from WordExtractor import WordExtractor # import here as nltk packages are downloaded when WordExtractor is imported
 	if interested_in:
