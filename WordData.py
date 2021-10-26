@@ -101,7 +101,7 @@ class WordData:
 		if p not in ('NNP', 'NNPS') and w[0].isupper():
 			w = w.lower()
 		if self.lemmatizer is not None:
-			w = self.lemmatizer.lemmatize(w, pos=WordData.get_wordnet_pos(p))	
+			w = self.lemmatizer.lemmatize(w, pos=WordData.get_wordnet_pos(p))
 		return word_pos[0] == w and word_pos[1] == p
 
 
