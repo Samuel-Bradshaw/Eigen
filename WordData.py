@@ -55,7 +55,7 @@ class WordData:
 			# Check how many times word appears in each sentence
 			for sentence_pos in sentences:
 				for wp in sentence_pos:
-					if WordData.is_equivalent(word_pos, wp):
+					if self.is_equivalent(word_pos, wp):
 						count += 1
 		return count
 
@@ -89,8 +89,7 @@ class WordData:
 		results_iter = self.generate_results(min_count=min_count, sort_by=sort_by)
 		return islice(results_iter, 0 , n)
 
-	@staticmethod
-	def is_equivalent(word_pos, word_pos_in_sentence):
+	def is_equivalent(self, word_pos, word_pos_in_sentence):
 		""" 
 		Returns True if a word in the context of a sentence is counted as being the same as word, accounting for potential lemmatisation.
 		
@@ -101,6 +100,8 @@ class WordData:
 		w, p = word_pos_in_sentence
 		if p not in ('NNP', 'NNPS') and w[0].isupper():
 			w = w.lower()
+		if self.lemmatizer is not None:
+			w = self.lemmatizer.lemmatize(w, pos=WordData.get_wordnet_pos(p))	
 		return word_pos[0] == w and word_pos[1] == p
 
 
