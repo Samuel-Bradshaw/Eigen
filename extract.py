@@ -11,7 +11,7 @@ from CLIOption import CLIOption
 
 OPTIONS = {
 	CLIOption('file', 'f', 'output file to record results in. If this is not included, results are printed to console.', 'filename'),
-	CLIOption('num', 'n', f'specifies the number of words to include in result. By default, 15 are retrieved.', 'n'),
+	CLIOption('num', 'n', 'specifies the number of words to include in result. By default, 15 are retrieved.', 'n'),
 	CLIOption('omit_sentences', 'o', 'omit sentences that word occured in from the results.'),
 	CLIOption('all', 'a', 'retrieve all results. This overrides num option.'),
 	CLIOption('min_count', 'm', 'set a minimum number of times a word should appear in texts for it to be included in results.', 'min'),
