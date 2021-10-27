@@ -64,7 +64,7 @@ def get_files(dir):
 	Returns a list of all files in a given directory
 	"""
 	if not os.path.isdir(dir):
-		raise TypeError(f"get_files must be supplied with a valid path of a directory")
+		raise TypeError("get_files must be supplied with a valid path of a directory")
 	return [os.path.join(dir, f) for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
 
 
