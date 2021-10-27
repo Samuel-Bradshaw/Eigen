@@ -46,12 +46,11 @@ class WordExtractor:
 					word_pos_tuples = nltk.pos_tag(words) # pos = part-of-speech
 					for word_pos in set(word_pos_tuples): # Convert to set so if same word appears twice in same sentence it is not duplicated in data.
 						word, pos = word_pos
-						# convert to lowercase if word is not a proper noun.
-						if pos not in ('NNP','NNPS') and word[0].isupper(): 
+						if pos not in ('NNP','NNPS') and word[0].isupper():
+							# convert to lower case if word is not a proper noun.
 							word_pos = (word.lower(), pos)
 						if WordExtractor.is_interesting(word_pos):
-							if pos.startswith('V') and not "'" in word\
-								or not pos.startswith('V'):
+							if not pos.startswith('V') or "'" in word: # Filter out abbreviated verbs 
 								data.add(word_pos, file.name, word_pos_tuples)
 
 	@staticmethod

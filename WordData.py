@@ -53,7 +53,7 @@ class WordData:
 			if file is not None:
 				sentences = self.data.get(word_pos).get(file) or []
 			else:
-				sentences = (sentence for f in list(self.data.get(word_pos).values()) for sentence in f)
+				sentences = (sentence for f in self.data.get(word_pos).values() for sentence in f)
 			# Check how many times word appears in each sentence
 			for sentence_pos in sentences:
 				for wp in sentence_pos:
@@ -129,7 +129,7 @@ class WordData:
 			word_info = f"{rank + 1} - {word_pos[0]} ({self.get_count(word_pos)})"
 			output_lines.append(f'{word_info} {{')
 			# Print file names that word occured in 
-			for filepath in list(occurences.keys()):
+			for filepath in occurences.keys():
 				filename = path.split(filepath)[-1]
 				file_info = f'\t{filename} ({self.get_count(word_pos, file=filepath)})' + (' [' if include_sentences else ',')
 				output_lines.append(file_info)
