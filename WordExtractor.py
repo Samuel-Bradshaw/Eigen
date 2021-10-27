@@ -7,9 +7,6 @@ class WordExtractor:
 	"""
 	Class for reading text from a file and extracting interesting words and information on where they occured. 
 	"""
-	nltk.download('punkt') 
-	nltk.download('stopwords')
-	nltk.download('averaged_perceptron_tagger')
 
 	STOP_WORDS = set(nltk.corpus.stopwords.words('english')) 
 	""" Set of commonly used words in English language. """
@@ -78,6 +75,12 @@ class WordExtractor:
 				interesting.update({'JJ', 'JJR', 'JJS'})
 		WordExtractor.interesting_types = interesting
 
+	@staticmethod
+	def download_nltk_libraries():
+		""" Download required nltk libraries. This method must be run before any instances of WordExtractor class are substatiated. """
+		nltk.download('punkt') 
+		nltk.download('stopwords')
+		nltk.download('averaged_perceptron_tagger')
 
 	@staticmethod
 	def is_interesting(word_pos: tuple):

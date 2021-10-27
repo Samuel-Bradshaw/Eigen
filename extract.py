@@ -7,6 +7,7 @@ import getopt
 import sys
 import traceback
 from WordData import WordData
+from WordExtractor import WordExtractor
 from CLIOption import CLIOption
 
 OPTIONS = {
@@ -37,16 +38,16 @@ def extract_word_data(input_files, file=None, num=15, omit_sentences=False, all=
 		interested_in: A list of word types to be returned in the results. Valid entries are "verbs", "adjectives", or "nouns".
 		lemmatize: If True, all words are lemmatized when added to data. E.g. "walking" -> "walk", "children" -> "child", etc.
 	"""
-	from WordExtractor import WordExtractor # import here as nltk packages are downloaded when WordExtractor is imported
 	if interested_in:
 		try:
 			WordExtractor.set_interesting_types(interested_in)
 		except ValueError as e:
 			print(f'Error: invalid value specified for --interesting option. {e}')
 			print_help_and_exit(1)
-
-	word_data = WordData(lemmatize)
+	WordExtractor.download_nltk_libraries()
+	
 	# Extract word data from files
+	word_data = WordData(lemmatize)
 	for input_file in input_files:
 		we = WordExtractor(input_file)
 		print(f"Extracting word data from {input_file}...")
