@@ -53,8 +53,7 @@ class WordData:
 			if file is not None:
 				sentences = self.data.get(word_pos).get(file) or []
 			else:
-				# Flatten 2d list of sentences to 1d array
-				sentences = (s for doc in list(self.data.get(word_pos).values()) for s in doc)
+				sentences = (sentence for f in list(self.data.get(word_pos).values()) for sentence in f)
 			# Check how many times word appears in each sentence
 			for sentence_pos in sentences:
 				for wp in sentence_pos:
