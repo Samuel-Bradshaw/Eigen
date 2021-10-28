@@ -33,11 +33,7 @@ class WordData:
 			lemmatized_word = self.lemmatizer.lemmatize(word_pos[0], pos=WordData.get_wordnet_pos(word_pos[1]))
 			word_pos = (lemmatized_word, word_pos[1])
 
-		if self.data.get(word_pos) is None: # Word has not been seen yet
-			self.data[word_pos] = dict()
-		if self.data.get(word_pos).get(file) is None: # Word has not been seen in given file
-			self.data[word_pos][file] = []
-		self.data[word_pos][file].append(sentence_pos)
+		self.data.setdefault(word_pos, dict()).setdefault(file, []).append(sentence_pos)
 
 	def get_count(self, word_pos, file=None):
 		""" 
@@ -90,7 +86,7 @@ class WordData:
 			An iterable object of results in tuple form, where each tuple \
 				is a word followed by its dictionary of occurrences.
 		"""
-		n = n or len(self.data.keys())
+		n = n or len(self.data)
 		results_iter = self.generate_results(min_count=min_count, sort_by=sort_by)
 		return islice(results_iter, 0 , n)
 
