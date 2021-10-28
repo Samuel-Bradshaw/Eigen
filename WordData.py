@@ -33,7 +33,6 @@ class WordData:
 		if self.lemmatizer is not None:
 			lemmatized_word = self.lemmatizer.lemmatize(word_pos[0], pos=WordData.get_wordnet_pos(word_pos[1]))
 			word_pos = (lemmatized_word, word_pos[1])
-
 		self.data[word_pos][file].append(sentence_pos)
 
 	def get_count(self, word_pos, file=None):
