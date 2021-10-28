@@ -5,6 +5,7 @@ from itertools import islice
 from typing import Iterable
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from nltk.corpus import wordnet
+from collections import defaultdict
 import nltk
 
 class WordData:
@@ -14,7 +15,7 @@ class WordData:
 		"""
 		param lemmatize: Determines whether words should be lemmatized before being added to data. 
 		"""
-		self.data = dict()
+		self.data = defaultdict(lambda: defaultdict(list))
 		if lemmatize:
 			nltk.download('wordnet')
 		self.lemmatizer = nltk.stem.WordNetLemmatizer() if lemmatize else None
@@ -33,9 +34,7 @@ class WordData:
 			lemmatized_word = self.lemmatizer.lemmatize(word_pos[0], pos=WordData.get_wordnet_pos(word_pos[1]))
 			word_pos = (lemmatized_word, word_pos[1])
 
-		occurences = self.data.setdefault(word_pos, dict())
-		sentences = occurences.setdefault(file, [])
-		sentences.append(sentence_pos)
+		self.data[word_pos][file].append(sentence_pos)
 
 	def get_count(self, word_pos, file=None):
 		""" 
@@ -46,17 +45,16 @@ class WordData:
 			The total number of occurences of a particular word in the data.
 		"""
 		count = 0
-		if self.data.get(word_pos) is not None:
-			# Get list of sentences word appears in
-			if file is not None:
-				sentences = self.data.get(word_pos).get(file) or []
-			else:
-				sentences = (sentence for f in self.data.get(word_pos).values() for sentence in f)
-			# Check how many times word appears in each sentence
-			for sentence_pos in sentences:
-				for wp in sentence_pos:
-					if self.is_equivalent(word_pos, wp):
-						count += 1
+		# Get list of sentences word appears in
+		if file is not None:
+			sentences = self.data.get(word_pos).get(file)
+		else:
+			sentences = (sentence for f in self.data.get(word_pos).values() for sentence in f)
+		# Check how many times word appears in each sentence
+		for sentence_pos in sentences:
+			for wp in sentence_pos:
+				if self.is_equivalent(word_pos, wp):
+					count += 1
 		return count
 
 	def generate_results(self, min_count=None, sort_by=None):
