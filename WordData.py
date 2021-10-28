@@ -33,7 +33,9 @@ class WordData:
 			lemmatized_word = self.lemmatizer.lemmatize(word_pos[0], pos=WordData.get_wordnet_pos(word_pos[1]))
 			word_pos = (lemmatized_word, word_pos[1])
 
-		self.data.setdefault(word_pos, dict()).setdefault(file, []).append(sentence_pos)
+		occurences = self.data.setdefault(word_pos, dict())
+		sentences = occurences.setdefault(file, [])
+		sentences.append(sentence_pos)
 
 	def get_count(self, word_pos, file=None):
 		""" 
