@@ -52,7 +52,7 @@ class WordExtractor:
 							# convert to lower case if word is not a proper noun.
 							word_pos = (word.lower(), pos)
 						if WordExtractor.is_interesting(word_pos):
-							if not pos.startswith('V') or "'" in word: # Filter out abbreviated verbs 
+							if not pos.startswith('V') or "'" not in word: # Filter out abbreviated verbs 
 								data.add(word_pos, file.name, word_pos_tuples)
 
 
