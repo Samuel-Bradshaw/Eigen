@@ -24,6 +24,7 @@ class WordExtractor:
 	}
 	""" Types of words to include. See nltk documentation for pos tagging. Run nltk.help.upenn_tagset() to see full list of nltk pos tags. """
 
+
 	def __init__(self, filepath, encoding=None):
 		"""
 		filepath: path to text file to extract word data from.
@@ -31,6 +32,7 @@ class WordExtractor:
 		"""
 		self.filepath = filepath
 		self.encoding = encoding or 'utf8'
+
 
 	def extract_words(self, data: WordData):
 		"""
@@ -53,6 +55,7 @@ class WordExtractor:
 							if not pos.startswith('V') or "'" in word: # Filter out abbreviated verbs 
 								data.add(word_pos, file.name, word_pos_tuples)
 
+
 	@staticmethod
 	def set_interesting_types(word_types):
 		""" 
@@ -74,12 +77,14 @@ class WordExtractor:
 				interesting.update({'JJ', 'JJR', 'JJS'})
 		WordExtractor.interesting_types = interesting
 
+
 	@staticmethod
 	def download_nltk_libraries():
 		""" Download required nltk libraries. This method must be run before any instances of WordExtractor class are substatiated. """
 		nltk.download('punkt') 
 		nltk.download('stopwords')
 		nltk.download('averaged_perceptron_tagger')
+
 
 	@staticmethod
 	def is_interesting(word_pos: tuple):

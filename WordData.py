@@ -19,7 +19,8 @@ class WordData:
 		if lemmatize:
 			nltk.download('wordnet')
 		self.lemmatizer = nltk.stem.WordNetLemmatizer() if lemmatize else None
-	
+
+
 	def add(self, word_pos, file, sentence_pos):
 		"""
 		Adds occurence of word to data, including information on 
@@ -34,6 +35,7 @@ class WordData:
 			lemmatized_word = self.lemmatizer.lemmatize(word_pos[0], pos=WordData.get_wordnet_pos(word_pos[1]))
 			word_pos = (lemmatized_word, word_pos[1])
 		self.data[word_pos][file].append(sentence_pos)
+
 
 	def get_count(self, word_pos, file=None):
 		""" 
@@ -56,6 +58,7 @@ class WordData:
 					count += 1
 		return count
 
+
 	def generate_results(self, min_count=None, sort_by=None):
 		"""
 		Generates tuples containing words and information on where they occured.
@@ -74,6 +77,7 @@ class WordData:
 			if min_count is None or self.get_count(word_pos) >= min_count:
 				yield (word_pos, self.data[word_pos])
 
+
 	def get_results(self, n=None, min_count=None, sort_by=None):
 		"""
 		Args:
@@ -88,6 +92,7 @@ class WordData:
 		n = n or len(self.data)
 		results_iter = self.generate_results(min_count=min_count, sort_by=sort_by)
 		return islice(results_iter, 0 , n)
+
 
 	def is_equivalent(self, word_pos, word_pos_in_sentence):
 		""" 
@@ -145,6 +150,7 @@ class WordData:
 			with open(file, 'w') as f:
 				print(output, file=f)
 			print(f"\nResults recorded to {file}")
+
 
 	@staticmethod
 	def get_wordnet_pos(nltk_pos):

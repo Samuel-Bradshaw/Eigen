@@ -1,7 +1,6 @@
 # Author: Sam Bradshaw
 # 25/10/2021
 # Developed using python 3.10
-
 import os
 import getopt
 import sys
