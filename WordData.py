@@ -6,6 +6,7 @@ from typing import Iterable
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from nltk.corpus import wordnet
 from collections import defaultdict
+from threading import Lock
 import nltk
 
 class WordData:
@@ -19,6 +20,7 @@ class WordData:
 		if lemmatize:
 			nltk.download('wordnet')
 		self.lemmatizer = nltk.stem.WordNetLemmatizer() if lemmatize else None
+		self.lock = Lock()
 
 
 	def add(self, word_pos, file, sentence_pos):
@@ -31,10 +33,12 @@ class WordData:
 			file: The file the word was found in.
 			sentence_pos: The full sentence the word occured in, split in to an array of (word, pos_tags) tuples.
 		"""
-		if self.lemmatizer is not None:
-			lemmatized_word = self.lemmatizer.lemmatize(word_pos[0], pos=WordData.get_wordnet_pos(word_pos[1]))
-			word_pos = (lemmatized_word, word_pos[1])
-		self.data[word_pos][file].append(sentence_pos)
+		with self.lock:
+			if self.lemmatizer is not None:
+				lemmatized_word = self.lemmatizer.lemmatize(word_pos[0], pos=WordData.get_wordnet_pos(word_pos[1]))
+				word_pos = (lemmatized_word, word_pos[1])
+			
+			self.data[word_pos][file].append(sentence_pos)
 
 
 	def get_count(self, word_pos, file=None):

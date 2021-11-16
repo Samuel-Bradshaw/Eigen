@@ -1,8 +1,10 @@
 # Author: Sam Bradshaw
 # 25/10/2021
 # Developed using python 3.10
+from threading import Thread
 import os
 import getopt
+import time
 import sys
 import traceback
 from WordData import WordData
@@ -47,10 +49,16 @@ def extract_word_data(input_files, file=None, num=15, omit_sentences=False, all=
 	
 	# Extract word data from files
 	word_data = WordData(lemmatize)
+
+	threads = []
 	for input_file in input_files:
-		we = WordExtractor(input_file)
-		print(f"Extracting word data from {input_file}...")
-		we.extract_words(word_data)
+		thread = Thread(target=extract_file, args=(word_data, input_file))
+		#extract_file(word_data, input_file)
+		thread.start()
+		threads.append(thread)
+	
+	for thread in threads:
+		thread.join()
 	
 	# Retrieve word results in descending order of total number of occurences in all files
 	if all is True: num = None
@@ -58,6 +66,12 @@ def extract_word_data(input_files, file=None, num=15, omit_sentences=False, all=
 	results = word_data.get_results(n=num, min_count=min_count, sort_by=count_desc_alphabetical)
 	word_data.print_results(results, not omit_sentences, file=file)
 
+
+def extract_file(word_data: WordData, input_file):
+	we = WordExtractor(input_file)
+	print(f"Extracting word data from {input_file}...")
+	we.extract_words(word_data)
+	
 
 def get_files(dir):
 	"""
@@ -126,6 +140,7 @@ def main():
 	Parses command line options, extracts data from files listed in given folder, 
 	and outputs data on "interesting" words found in files.
 	"""
+	start = time.time()
 	if len(sys.argv) == 1 or sys.argv[1] in ('--help', '-h'):
 		print_help_and_exit()
 	try:
@@ -144,6 +159,9 @@ def main():
 	except TypeError:
 		print(traceback.format_exc())
 		print_help_and_exit(1)
+	end = time.time()
+	delta = end - start
+	print(f'took {delta:.3f} seconds.')
 
 
 if __name__ == '__main__':
